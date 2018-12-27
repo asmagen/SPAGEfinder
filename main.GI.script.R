@@ -49,14 +49,14 @@
   # ____________________________________________________________________________________________________________________________________________________________
 
   results.path=base.res.path
-  preprocess.genomic.data(data,temp,dataset,base.res.path,constrain.gene.set = drivers)
+  preprocess.genomic.data (data,temp,dataset,base.res.path,constrain.gene.set = drivers)
 
   # ____________________________________________________________________________________________________________________________________________________________
   #
   # Run Log-Rank analysis
   # ____________________________________________________________________________________________________________________________________________________________
 
-  job.ids = run.distributed.pairwise.significance( scripts,temp,dataset,results.path,queues,num.jobs,memory,walltime )
+  job.ids = run.distributed.pairwise.significance (scripts,temp,dataset,results.path,queues,num.jobs,memory,walltime)
 
   # Run calculate.null.molecular in the meanwhile - it's independent
   results.path = base.res.path
@@ -82,7 +82,7 @@
   # ____________________________________________________________________________________________________________________________________________________________
   
   molecular = F
-  job.ids = calculate.base.cox.model ( scripts,data,temp,dataset,results.path,queues,num.jobs,memory,walltime )
+  job.ids = calculate.base.cox.model (scripts,data,temp,dataset,results.path,queues,num.jobs,memory,walltime)
   setwd(job.ids$path)
   tryCatch({get_slurm_out(job.ids, outtype = 'table',wait = T);get_slurm_out(job.ids, outtype = 'table');get_slurm_out(job.ids, outtype = 'table')},error=function(v) v)
   tryCatch({cleanup_files(job.ids);cleanup_files(job.ids);cleanup_files(job.ids)},error=function(v) v)
@@ -93,7 +93,7 @@
   # ____________________________________________________________________________________________________________________________________________________________
 
   support = 0
-  job.ids = calculate.candidates.cox.fdr ( scripts,data,temp,dataset,results.path,queues,num.jobs,memory,walltime )
+  job.ids = calculate.candidates.cox.fdr (scripts,data,temp,dataset,results.path,queues,num.jobs,memory,walltime)
   setwd(job.ids$path)
   tryCatch({get_slurm_out(job.ids, outtype = 'table',wait = T);get_slurm_out(job.ids, outtype = 'table');get_slurm_out(job.ids, outtype = 'table')},error=function(v) v)
   tryCatch({cleanup_files(job.ids);cleanup_files(job.ids);cleanup_files(job.ids)},error=function(v) v)
@@ -103,28 +103,7 @@
   # Compile final GI list based on FDR quantile
   # ____________________________________________________________________________________________________________________________________________________________
 
-  LLR.threshold = 0.99
-  use.fdr = T
-  PPI = F
-  results.path = base.res.path
-
-  states = get.final.GIs (
-                      temp,
-                      data,
-                      
-                      results.path,
-                      LLR.threshold,
-                      use.fdr,
-                      opposite.direction,
-                      bins,
-                      limit,
-                      interaction.direction,
-                      shuffle,
-                      random,
-                      include.bins,
-                      PPI,
-                      functional.interactions,
-                      random.subset)
+  states = get.final.GIs (temp,data,results.path = base.res.path,LLR.threshold = 0.99,PPI = F)
   head(states,20)
   dim(states)
 

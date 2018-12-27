@@ -297,12 +297,7 @@ calculate.candidates.cox.fdr <- function( scripts,data,temp,dataset,results.path
 }
 
 
-get.final.GIs <- function(
-                      temp, 
-                      data,
-                      results.path,
-                      LLR.threshold,
-                      PPI = F) {
+get.final.GIs <- function( temp,data,results.path,LLR.threshold,PPI = F ) {
   
   cat('______________________________________________________________\n')
   start.time <- Sys.time()
