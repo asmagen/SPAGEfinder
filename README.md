@@ -7,7 +7,9 @@ See main.GI.script.R for full details.
 
   ## Set up environment
   ssh username@server
+  
   module purge;module add R/common/3.3.1;R
+  
   install.packages(pkgs = c('Rcpp','survival','rslurm','foreach','doMC','data.table','igraph','survcomp'))
 
   ## Preprocess genomic and clinical data
@@ -30,4 +32,5 @@ See main.GI.script.R for full details.
   
   ## Compile final GI list based on FDR quantile
   states = get.final.GIs (temp,data,results.path = base.res.path,LLR.threshold = 0.99,PPI = F)
+  
   write.csv(states,file = file.path(results.path,'final.GIs.csv'))
