@@ -1,6 +1,6 @@
 # EncyclopediaGeneticInteractions
 
-A multi-step computational pipeline (Encyclopedia of Genetic Interactions - EnGIne) to search for clinically relevant functional gene interactions given their association with patient survival
+A multi-step computational pipeline (Encyclopedia of Genetic Interactions - EnGIne) to search for clinically relevant functional gene interactions given their association with patient survival.
 
 # Analysis pipeline summary
 See main.GI.script.R for full details.
