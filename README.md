@@ -1,4 +1,4 @@
-# EncyclopediaGeneticInteractions Manual (Brief version)
+# Encyclopedia of Genetic Interactions Manual (Brief version)
 
 A multi-step computational pipeline (Encyclopedia of Genetic Interactions - EnGIne) to search for clinically relevant functional gene interactions given their association with patient survival.
 
