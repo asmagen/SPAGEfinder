@@ -5,6 +5,12 @@ A multi-step computational pipeline (Encyclopedia of Genetic Interactions - EnGI
 # Analysis pipeline summary
 See main.GI.script.R for full details.
 
+## Input format
+The input includes mRNA expression matrix and patient clinical-demographic information. The TCGA dataset (filtered to Census Cancer Genes) is provided here for quick analysis.
+
+## Output format
+Final GI list is generated in a matrix format where each row represents a GI that is annotated by a quadruple (x,y,bin,effect), where x and y are the two interacting genes, bin is a number indicating the bin annotation and effect annotated the significance level where the sign of the effect represents the direction of the interaction; Positive sign represents higher survival risk while negative sign represents lower survival risk.
+
   ## Set up environment
   ### (Connecting to high performance computing environment and installing packages; Slurm Workload Manager required)
   ssh username@server
