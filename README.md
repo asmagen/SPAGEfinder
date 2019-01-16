@@ -31,6 +31,7 @@ C code is being compiled by R thus compiling it before running the pipeline is n
   run.distributed.pairwise.significance (scripts,temp,dataset,results.path,queues,num.jobs,memory,walltime)
 
   ## Merge Log-Rank analysis files
+  ### (Load and merge the files stored in the distributed log-rank analysis)
   merge.clinical.results (temp,scripts,dataset,p.val.quantile.threshold,base.res.path,results.path = file.path( base.res.path,'results' ),large.queues = 'large',memory = '120GB',walltime = '3:00:00')
 
   ## Run Null molecular calculation
