@@ -21,10 +21,6 @@ C code is being compiled by R thus compiling it before running the pipeline is n
   module purge;module add R/common/3.3.1;R
   
   install.packages(pkgs = c('Rcpp','survival','rslurm','foreach','doMC','data.table','igraph','survcomp'))
-
-  ## Preprocess genomic and clinical data
-  ### (Loading mRNA and clinical data, identifying abundant clinical-demographic subgroups and perform mRNA binning)
-  preprocess.genomic.data (data,temp,dataset,base.res.path,constrain.gene.set = drivers)
   
   ## Run Log-Rank analysis
   ### (Distributed C++ code for all 9 bins survival trends modelling)
