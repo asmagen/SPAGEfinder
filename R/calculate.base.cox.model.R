@@ -90,7 +90,7 @@ calculate.base.cox.model <- function(scripts,data,temp,dataset,datatype,workers,
   results.path = file.path(temp,dataset)
 
   cat('Loading data\n')
-  load(file = file.path(results.path,paste('data',datatype,'RData',sep='.')))
+  load(file = file.path(scripts,'data',paste('data',datatype,'RData',sep='.')))
 
   cat('Loading candidates\n')
   load(file.path(results.path,paste(datatype,'candidates.pancancer.results.RData',sep='.')))

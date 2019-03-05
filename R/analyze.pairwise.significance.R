@@ -24,7 +24,7 @@ analyze.pairwise.significance <- function(scripts,temp,dataset,datatype,workers,
     cat(datatype,'analysis\n')
 
     load(file = 
-      file.path(base.work.dir,
+      file.path(scripts,'data',
                 paste('data',datatype,'RData',sep='.')))
 
     cancerType = clinical$type

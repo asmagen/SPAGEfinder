@@ -4,14 +4,18 @@
   # Set up environment
   # ____________________________________________________________________________________________________________________________________________________________
 
+  # User needs to set the following environment-specific parameters:
+  # USER_NAME - the user name used to login to the HPC server
+  # r.package.path - Path for the downloaded pipeline scripts and data
+  # temp - Path for analysis results
+  # 
+  # 
+
   # Connect to HPC cluster
-  ssh magen@cbcbsub00.umiacs.umd.edu
+  ssh USER_NAME@SERVER_ADDRESS
   screen -r -d GI
   module purge;module add R/common/3.3.1;R
   install.packages(pkgs = c('Rcpp','survival','rslurm','foreach','doMC','data.table','igraph','survcomp'))
-  # Put script files in scripts folder 'pipeline_example'
-  # Put data files (TCGA dataset 'prob.TCGA.extended.RData', Hippie file 'hippie_current.txt' and Census cancer genes 'Census_all.csv') in data folder
-  # Create analysis folder ('temp')
 
   # ____________________________________________________________________________________________________________________________________________________________
   #
@@ -19,13 +23,13 @@
   # ____________________________________________________________________________________________________________________________________________________________
 
   source('/cbcbhomes/magen/RSR/pan.cancer/pipeline_example/main.GI.script.functions.R')
-  # /cbcbhomes/magen/RSR/pan.cancer/pipeline_example
 
-  scripts = '/cbcbhomes/magen/RSR/pan.cancer/pipeline_example' # Path for pipeline scripts
-  data    = '/cbcbhomes/magen/RSR/data' # Path for data folder
-  outputs = '/cbcbhomes/magen/RSR/results' # Path for HPC job run outputs
-  temp    = '/cbcb/project2-scratch/amagen/RSR/data' # Path for analysis results
-  dataset                  = 'pancancer.example' # dataset/project name to be used as an analysis folder
+  scripts = file.path(r.package.path,'scripts')
+  data    = file.path(r.package.path,'data') # Path for data folder
+  outputs = file.path(r.package.path,'results') # Path for HPC job run outputs
+  temp   # Path for analysis results set by user
+  
+  dataset = 'pancancer.drivers' # dataset/project name to be used as an analysis folder
   p.val.quantile.threshold = 0.8 # Log-Rank threshold (p value quantile)
   
   queues   = 'high_throughput' # SLURM HPC queue
@@ -36,20 +40,14 @@
   base.res.path = file.path(temp,dataset)
   
   create.folders( base.res.path )
-
-  library(data.table)
-  census = fread(file.path(data,'Census_all.csv'))
-  census = data.table(census)
-  drivers = census$"Gene Symbol"
-  drivers
   
   # ____________________________________________________________________________________________________________________________________________________________
   #
   # Preprocess genomic and clinical data
   # ____________________________________________________________________________________________________________________________________________________________
 
-  results.path=base.res.path
-  preprocess.genomic.data (data,temp,dataset,base.res.path,constrain.gene.set = drivers)
+  # Do not use if using example dataset from repository
+  # preprocess.genomic.data (data,temp,dataset,base.res.path)
 
   # ____________________________________________________________________________________________________________________________________________________________
   #

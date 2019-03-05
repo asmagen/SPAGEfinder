@@ -11,6 +11,10 @@ clear.previous.results <- function( results.path ) {
 create.folders <- function( results.path ) {
 
   dir.create( 
+    results.path, 
+    recursive = TRUE, showWarnings = FALSE )
+
+  dir.create( 
     file.path(results.path,'output'), 
     recursive = TRUE, showWarnings = FALSE )
 
@@ -32,7 +36,7 @@ preprocess.genomic.data <- function(
   nbins = 3
 
   cat('Preprocess genomic data\n')
-  file.name = file.path(results.path,'data.mRNA.RData')
+  file.name = file.path(scripts,'data','data.mRNA.RData')
 
   suppressMessages(library(survival))
   cat('Loading raw data\n')
@@ -210,7 +214,7 @@ merge.clinical.results <- function( temp,scripts,dataset,p.val.quantile.threshol
 calculate.null.molecular <- function (
   temp,dataset,null.molecular.file,shuffle.frac = 0.1) {
 
-  load(file = file.path(temp,dataset,'data.mRNA.RData'))
+  load(file = file.path(scripts,'data',dataset,'data.mRNA.RData'))
 
   nshuffled = ceiling(shuffle.frac * choose(nrow(bin.map),2))
 
@@ -301,7 +305,7 @@ get.final.GIs <- function( temp,data,results.path,LLR.threshold,PPI = F ) {
   
   cat('______________________________________________________________\n')
   start.time <- Sys.time()
-  load(file = file.path(results.path,'data.mRNA.RData'))
+  load(file = file.path(scripts,'data','data.mRNA.RData'))
 
   selected.functional.states = {}
   bin = 1
