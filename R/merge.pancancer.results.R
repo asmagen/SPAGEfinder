@@ -1,5 +1,5 @@
 
-merge.pancancer.results <- function(scripts,temp,dataset,datatype,num.jobs,p.val.quantile.threshold) {
+merge.pancancer.results <- function(r.package.path,temp,dataset,datatype,num.jobs,p.val.quantile.threshold) {
  
  print('merge.pancancer.results')
 
@@ -7,7 +7,7 @@ merge.pancancer.results <- function(scripts,temp,dataset,datatype,num.jobs,p.val
 
  overall.start.time = Sys.time()
 
- print(scripts)
+ print(r.package.path)
  print(temp)
  print(dataset)
  print(datatype)

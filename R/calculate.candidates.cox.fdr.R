@@ -1,12 +1,11 @@
 
-calculate.candidates.cox.fdr <- function(scripts,data,temp,dataset,datatype,support,workers,id) {
+calculate.candidates.cox.fdr <- function(r.package.path,temp,dataset,datatype,support,workers,id) {
 
   print('calculate.candidates.cox.fdr')
 
   cat(date(),'\n')
   
-  print(scripts)
-  print(data)
+  print(r.package.path)
   print(temp)
   print(dataset)
   print(datatype)
@@ -67,10 +66,10 @@ calculate.candidates.cox.fdr <- function(scripts,data,temp,dataset,datatype,supp
 
   if( support == 1 ) {
     load(file = 
-    file.path(results.path,
+    file.path(r.package.path,'data',
               paste('data',ifelse(datatype=='mRNA','scna','mRNA'),'RData',sep='.')))
   } else {
-    load(file = file.path(results.path,paste('data',datatype,'RData',sep='.')))
+    load(file = file.path(r.package.path,'data',paste('data',datatype,'RData',sep='.')))
   }
 
   suppressMessages(library(survival))

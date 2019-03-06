@@ -1,11 +1,10 @@
-calculate.base.cox.model <- function(scripts,data,temp,dataset,datatype,workers,id) {
+calculate.base.cox.model <- function(r.package.path,temp,dataset,datatype,workers,id) {
 
   print('calculate.base.cox.model')
 
   cat(date(),'\n')
   
-  print(scripts)
-  print(data)
+  print(r.package.path)
   print(temp)
   print(dataset)
   print(datatype)
@@ -90,14 +89,14 @@ calculate.base.cox.model <- function(scripts,data,temp,dataset,datatype,workers,
   results.path = file.path(temp,dataset)
 
   cat('Loading data\n')
-  load(file = file.path(scripts,'data',paste('data',datatype,'RData',sep='.')))
+  load(file = file.path(r.package.path,'data',paste('data',datatype,'RData',sep='.')))
 
   cat('Loading candidates\n')
   load(file.path(results.path,paste(datatype,'candidates.pancancer.results.RData',sep='.')))
   molecular.stats = NA
 
   library(data.table)
-  load(file.path(temp,dataset,paste(datatype,'null.molecular.RData',sep='.')))
+  load(file.path(temp,dataset,'null.molecular.RData'))
 
   molecular.quantiles = apply(stats,2,function(v) quantile(v,c(0.45,0.55),na.rm=T))
   molecular.quantiles

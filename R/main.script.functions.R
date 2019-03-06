@@ -31,12 +31,12 @@ create.folders <- function( results.path ) {
 }
 
 preprocess.genomic.data <- function(
-				data,temp,dataset,results.path,constrain.gene.set = NA) {
+				r.package.path,temp,dataset,results.path,constrain.gene.set = NA) {
 
   nbins = 3
 
   cat('Preprocess genomic data\n')
-  file.name = file.path(scripts,'data','data.mRNA.RData')
+  file.name = file.path(r.package.path,'R','data.mRNA.RData')
 
   suppressMessages(library(survival))
   cat('Loading raw data\n')
@@ -173,23 +173,23 @@ get.bin.quantile.intervals <- function(c,quantiles,recursion = 1) {
   return(intervals)
 }
 
-run.distributed.pairwise.significance <- function( scripts,temp,dataset,results.path,queues,num.jobs,memory,walltime ) {
+run.distributed.pairwise.significance <- function( r.package.path,temp,dataset,results.path,queues,num.jobs,memory,walltime ) {
 
   output.path = file.path(results.path,'output')
 
   setwd(results.path)
-  source(file.path(scripts,'analyze.pairwise.significance.R'))
+  source(file.path(r.package.path,'R','analyze.pairwise.significance.R'))
   library(rslurm,quietly=T)
-  params = data.frame(scripts,temp,dataset,'mRNA',workers=num.jobs,id=seq(num.jobs));head(params)
+  params = data.frame(r.package.path,temp,dataset,datatype='mRNA',workers=num.jobs,id=seq(num.jobs));head(params)
   sopt <- list(qos = queues, mem = memory, time = walltime, share = TRUE)
   setwd(results.path);getwd()
   job.ids <- slurm_apply(analyze.pairwise.significance, params, nodes = nrow(params), cpus_per_node = 1, submit = TRUE, slurm_options = sopt)
   job.ids$path = getwd()
-  setwd(scripts);source('main.GI.script.functions.R')
+  setwd(file.path(r.package.path,'R'));source('main.script.functions.R')
   return(job.ids)
 }
 
-merge.clinical.results <- function( temp,scripts,dataset,p.val.quantile.threshold,base.res.path,results.path,large.queues,memory,walltime ) {
+merge.clinical.results <- function( temp,r.package.path,dataset,p.val.quantile.threshold,base.res.path,results.path,large.queues,memory,walltime ) {
 
   start.time <- Sys.time()
 
@@ -198,14 +198,14 @@ merge.clinical.results <- function( temp,scripts,dataset,p.val.quantile.threshol
   cat('Merging pancancer results\n')
 
   setwd(results.path)
-  source(file.path(scripts,'merge.pancancer.results.R'))
+  source(file.path(r.package.path,'R','merge.pancancer.results.R'))
   library(rslurm,quietly=T)
-  params = data.frame(scripts,temp,dataset,'mRNA',num.jobs,p.val.quantile.threshold);head(params)
+  params = data.frame(r.package.path,temp,dataset,datatype='mRNA',num.jobs,p.val.quantile.threshold);head(params)
   sopt <- list(qos = large.queues, mem = memory, time = walltime, share = TRUE)
   setwd(results.path);getwd()
   job.ids <- slurm_apply(merge.pancancer.results, params, nodes = 1, cpus_per_node = 1, submit = TRUE, slurm_options = sopt)
   job.ids$path = getwd()
-  setwd(scripts);source('main.GI.script.functions.R')
+  setwd(file.path(r.package.path,'R'));source('main.script.functions.R')
   return(job.ids)
 
   print(Sys.time() - start.time)
@@ -214,7 +214,7 @@ merge.clinical.results <- function( temp,scripts,dataset,p.val.quantile.threshol
 calculate.null.molecular <- function (
   temp,dataset,null.molecular.file,shuffle.frac = 0.1) {
 
-  load(file = file.path(scripts,'data',dataset,'data.mRNA.RData'))
+  load(file = file.path(r.package.path,'data','data.mRNA.RData'))
 
   nshuffled = ceiling(shuffle.frac * choose(nrow(bin.map),2))
 
@@ -239,7 +239,7 @@ calculate.null.molecular <- function (
   save(quantiles,stats,file = null.molecular.file)
 }
 
-calculate.base.cox.model <- function( scripts,data,temp,dataset,results.path,queues,num.jobs,memory,walltime ) {
+calculate.base.cox.model <- function( r.package.path,temp,dataset,results.path,queues,num.jobs,memory,walltime ) {
 
   cat('Calculating base cox model\n')
 
@@ -259,18 +259,18 @@ calculate.base.cox.model <- function( scripts,data,temp,dataset,results.path,que
   start.time <- Sys.time()
 
   setwd(results.path)
-  source(file.path(scripts,'calculate.base.cox.model.R'))
+  source(file.path(r.package.path,'R','calculate.base.cox.model.R'))
   library(rslurm,quietly=T)
-  params = data.frame(scripts,data,temp,dataset,'mRNA',workers=num.jobs,id=seq(num.jobs));head(params)
+  params = data.frame(r.package.path,temp,dataset,datatype='mRNA',workers=num.jobs,id=seq(num.jobs));head(params)
   sopt <- list(qos = queues, mem = memory, time = walltime, share = TRUE)
   setwd(results.path);getwd()
   job.ids <- slurm_apply(calculate.base.cox.model, params, nodes = nrow(params), cpus_per_node = 1, submit = TRUE, slurm_options = sopt)
   job.ids$path = getwd()
-  setwd(scripts);source('main.GI.script.functions.R')
+  setwd(file.path(r.package.path,'R'));source('main.script.functions.R')
   return(job.ids)
 }
 
-calculate.candidates.cox.fdr <- function( scripts,data,temp,dataset,results.path,queues,num.jobs,memory,walltime ) {
+calculate.candidates.cox.fdr <- function( r.package.path,temp,dataset,results.path,queues,num.jobs,memory,walltime ) {
 
   cat('Calculating candidates cox fdr\n')
 
@@ -289,14 +289,14 @@ calculate.candidates.cox.fdr <- function( scripts,data,temp,dataset,results.path
                 full.names = TRUE))
 
   setwd(results.path)
-  source(file.path(scripts,'calculate.candidates.cox.fdr.R'))
+  source(file.path(r.package.path,'R','calculate.candidates.cox.fdr.R'))
   library(rslurm,quietly=T)
-  params = data.frame(scripts,data,temp,dataset,'mRNA',support,workers=num.jobs,id=seq(num.jobs));head(params)
+  params = data.frame(r.package.path,temp,dataset,datatype='mRNA',support,workers=num.jobs,id=seq(num.jobs));head(params)
   sopt <- list(qos = queues, mem = memory, time = walltime, share = TRUE)
   setwd(results.path);getwd()
   job.ids <- slurm_apply(calculate.candidates.cox.fdr, params, nodes = nrow(params), cpus_per_node = 1, submit = TRUE, slurm_options = sopt)
   job.ids$path = getwd()
-  setwd(scripts);source('main.GI.script.functions.R')
+  setwd(file.path(r.package.path,'R'));source('main.script.functions.R')
   return(job.ids)
 }
 
@@ -305,10 +305,11 @@ get.final.GIs <- function( temp,data,results.path,LLR.threshold,PPI = F ) {
   
   cat('______________________________________________________________\n')
   start.time <- Sys.time()
-  load(file = file.path(scripts,'data','data.mRNA.RData'))
+  load(file = file.path(r.package.path,'data','data.mRNA.RData'))
 
   selected.functional.states = {}
   bin = 1
+  bins = c(1:3,5:6,9)
   for( bin in bins ) {
     tryCatch({
       load(file.path(results.path,paste('mRNA.candidates.signed.delta.loglik',bin,'pancancer.results.RData',sep='.')))
@@ -320,7 +321,7 @@ get.final.GIs <- function( temp,data,results.path,LLR.threshold,PPI = F ) {
   selected.functional.states = selected.functional.states[rowSums(is.na(selected.functional.states))==0,]
 
   if( PPI ) {
-    ppi.distance.file = file.path(results.path,paste(paste(min(bins),max(bins),sep='-'),interaction.direction,'mRNA.HPRD.distances.RData',sep='.'))
+    ppi.distance.file = file.path(results.path,paste(paste(min(bins),max(bins),sep='-'),'mRNA.HPRD.distances.RData',sep='.'))
     if( !file.exists(ppi.distance.file) ) {
       cat('Calculating PPI distances\n')
       pairs = cbind(genes[selected.functional.states[,1]],genes[selected.functional.states[,2]])
