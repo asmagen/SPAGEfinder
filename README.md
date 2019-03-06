@@ -1,4 +1,4 @@
-# Encyclopedia of Genetic Interactions Manual (Brief version)
+# Survival associated Pairwise Gene Expression states finder (SPAGE-finder) Manual (Brief version)
 
 A multi-step computational pipeline (Encyclopedia of Genetic Interactions - EnGIne) to search for clinically relevant functional gene interactions given their association with patient survival.
 
