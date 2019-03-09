@@ -30,54 +30,33 @@ create.folders <- function( results.path ) {
   return(results)
 }
 
-preprocess.genomic.data <- function(
-				r.package.path,temp,dataset,results.path,constrain.gene.set = NA) {
+preprocess.genomic.data <- function(r.package.path) {
 
   nbins = 3
 
   cat('Preprocess genomic data\n')
-  file.name = file.path(r.package.path,'data','data.mRNA.RData')
 
   suppressMessages(library(survival))
-  cat('Loading raw data\n')
 
-  load(file.path(data,'prob.TCGA.extended.RData'))
+  cat('Loading raw data\n')
+  load(file.path(r.package.path,'data','dataset.RData'))
 
   measurements = prob$mRNA
-  dim(measurements)
-  summary(measurements[,1:10])
-
   genomic.instability = colSums(abs(prob$scna)>1,na.rm=T)/nrow(prob$scna)
-
   genes = prob$genes
-  clinical = data.frame(samples = prob$samples,type = prob$types,sex = prob$sex,age = prob$age,race = prob$race,stage = prob$stage,genomic.instability = genomic.instability,time = prob$survival[,1],status = 1-prob$survival[,2])
-  head(clinical)
+  clinical = data.frame(samples = prob$samples,type = prob$types,sex = prob$sex,age = prob$age,race = prob$race,genomic.instability = genomic.instability,time = prob$survival[,1],status = 1-prob$survival[,2])
   
   # Filter under-represented subgroups    
   strata = strata(clinical$type,clinical$sex,clinical$race)
   ranked.strata = sort(table(strata),decreasing=T)
   represented.strata = ranked.strata[ranked.strata>=100]
   represented.strata = represented.strata[!is.na(represented.strata)]
-  write.csv(represented.strata,file=file.path(temp,'confounder.strata.csv'))
-  names(represented.strata)
   matches = strata %in% names(represented.strata)
-  sum(matches)
-  apply(sapply(names(represented.strata),function(strat){ strsplit(strat,', ')[[1]] }),1,unique)
 
   matches = matches & clinical$time>0
   measurements = measurements[,matches]
   clinical = clinical[matches,]
   clinical$race = factor(clinical$race)
-  summary(clinical)
-  head(clinical)
-  dim(clinical)
-  dim(measurements)
-
-  if (length(constrain.gene.set) > 1) {
-    indices = genes %in% constrain.gene.set
-    measurements = measurements[indices,]
-    genes = genes[indices]
-  }
 
   measurements = qnorm.col(measurements)
 
@@ -104,7 +83,7 @@ preprocess.genomic.data <- function(
 
   cat(as.numeric(Sys.time() - start.time),'\n')
 
-  save(bin.map,measurements,genes,clinical,file = file.name)
+  save(bin.map,measurements,genes,clinical,file = file.path(r.package.path,'data','data.mRNA.RData'))
 }
 
 qnorm.col <- function(gene.exp.resid)
