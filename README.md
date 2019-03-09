@@ -1,7 +1,7 @@
 # SPAGE-finder Manual (Brief version)
 
 This repository contains code and coumentation for a multi-step computational pipeline to search for Survival associated Pairwise Gene Expression states finder (SPAGE-finder).
-Previously, the repository was called EnGIne. A manuscript describing the project can be found at:
+Previously, the repository was called EnGIne. The manuscript describing the project can be found at:
 https://www.biorxiv.org/content/10.1101/253120v2
 
 The repository can be retrieved from GitHub via the command
