@@ -7,9 +7,9 @@ https://www.biorxiv.org/content/10.1101/253120v2
 The repository can be retrieved from GitHub via the command
 git clone https://github.com/asmagen/SPAGEfinder
 
-This creates a new directory called SPAGEfinder where this README.md can be found
+This creates a new directory called SPAGEfinder where this README.md can be found.
 
-SPAGEfinder has two subdirectories 
+SPAGEfinder has two subdirectories: 
 data
 R  
 
@@ -35,37 +35,31 @@ The input includes mRNA expression matrix and patient clinical-demographic infor
 ## Output format
 Final SPAGEs list is generated in a matrix format where each row represents a SPAGE that is annotated by a quadruple (x,y,bin,effect), where x and y are the two interacting genes, bin is a number indicating the bin annotation and effect annotated the significance level where the sign of the effect represents the direction of the interaction; Positive sign represents higher survival risk while negative sign represents lower survival risk.
 
-# UNIX commands
-Connect to remote server [Example: ssh USER_NAME@SERVER_ADDRESS]
-Invoke R version 3.3.1 [Example (may be different across systems): module purge; module add R/3.3.1; R]
+## Analysis setup
+
+### UNIX commands
+Connect to remote server [Example: ssh USER_NAME@SERVER_ADDRESS]  
+Invoke R version 3.3.1 [Example (may be different across systems): module purge; module add R/3.3.1; R]  
 The following commands are set and run in the R environment.
 
-# Install R packages
+### Install R packages
 install.packages(pkgs = c('Rcpp','survival','rslurm','foreach','doMC','data.table','igraph'))
 Specify a repository of choice.
 
 if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
 BiocManager::install("survcomp", version = "1.24.0")
 
-# Define relevant analysis paths (in R)
-Define path for the downloaded pipeline scripts and data:
-r.package.path = 'USER_SET_PATH'
-Define path for analysis results set by user:
-temp = 'USER_SET_PATH'
+### Define relevant analysis paths (in R)
+r.package.path = 'USER_SET_PATH' # Define path for the downloaded pipeline scripts and data  
+temp = 'USER_SET_PATH' # Define path for analysis results set by user  
 
-# Change analysis parameters if defaults are inappropriate for the dataset
-dataset/project name to be used as an analysis folder:
-dataset = 'pancancer.drivers'
-Log-Rank threshold (p value quantile):
-p.val.quantile.threshold = 0.8
+### Change analysis parameters if defaults are inappropriate for the dataset  
+dataset = 'pancancer.drivers'# dataset/project name to be used as an analysis folder  
+p.val.quantile.threshold = 0.8 # Log-Rank threshold (p value quantile)  
 
-SLURM HPC queue:
-queues   = 'high_throughput'
-Memory allocation per job:
-memory   = '8GB'
-Time limit per job:
-walltime = '8:00:00'
-Number of jobs:
-num.jobs = 100
+queues   = 'high_throughput' # SLURM HPC queue  
+memory   = '8GB' # Memory allocation per job  
+walltime = '8:00:00' # Time limit per job  
+num.jobs = 100 # Number of jobs  
 
 Continue analysis by executing the commands in 'R/main.script.R'
