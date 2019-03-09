@@ -63,3 +63,14 @@ walltime = '8:00:00' # Time limit per job
 num.jobs = 100 # Number of jobs  
 
 Continue analysis by executing the commands in 'R/main.script.R'
+
+### Creating new datasets for analysis
+The function preprocess.genomic.data (r.package.path) can be used to process and perform binning of a 'dataset' object located at 'data/dataset.RData') and constructed in the following format:  
+mRNA field containing RSEM normalized mRNA measurements (rows corresponding to genes and columns to samples)  
+scna field containing copy-number variation measurements (rows corresponding to genes and columns to samples)  
+samples field containing sample IDs as factors  
+type field containing cancer types as factors  
+sex field containing sex annotation as factors  
+race field containing race annotation as factors  
+time field containing patient survival as number of days to death  
+status field containing patient death/alive status as 0 or 1, respectively  
