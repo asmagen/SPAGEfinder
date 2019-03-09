@@ -48,16 +48,24 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocMana
 BiocManager::install("survcomp", version = "1.24.0")
 
 # Define relevant analysis paths (in R)
-r.package.path = 'USER_SET_PATH' # Define path for the downloaded pipeline scripts and data
- temp = 'USER_SET_PATH' # Define path for analysis results set by user
+Define path for the downloaded pipeline scripts and data:
+r.package.path = 'USER_SET_PATH'
+Define path for analysis results set by user:
+temp = 'USER_SET_PATH'
 
 # Change analysis parameters if defaults are inappropriate for the dataset
-dataset = 'pancancer.drivers' # dataset/project name to be used as an analysis folder
-p.val.quantile.threshold = 0.8 # Log-Rank threshold (p value quantile)
+dataset/project name to be used as an analysis folder:
+dataset = 'pancancer.drivers'
+Log-Rank threshold (p value quantile):
+p.val.quantile.threshold = 0.8
 
-queues   = 'high_throughput' # SLURM HPC queue
-memory   = '8GB' # Memory allocation per job
-walltime = '8:00:00' # Time limit per job
-num.jobs = 100 # Number of jobs
+SLURM HPC queue:
+queues   = 'high_throughput'
+Memory allocation per job:
+memory   = '8GB'
+Time limit per job:
+walltime = '8:00:00'
+Number of jobs:
+num.jobs = 100
 
 Continue analysis by executing the commands in 'R/main.script.R'
