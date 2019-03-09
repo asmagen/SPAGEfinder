@@ -36,7 +36,7 @@ preprocess.genomic.data <- function(
   nbins = 3
 
   cat('Preprocess genomic data\n')
-  file.name = file.path(r.package.path,'R','data.mRNA.RData')
+  file.name = file.path(r.package.path,'data','data.mRNA.RData')
 
   suppressMessages(library(survival))
   cat('Loading raw data\n')
