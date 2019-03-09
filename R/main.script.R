@@ -4,35 +4,6 @@
   # Set up environment
   # ____________________________________________________________________________________________________________________________________________________________
 
-  # User needs to set the following environment-specific parameters:
-  # USER_NAME - the user name used to login to the HPC server
-  # r.package.path - Path for the downloaded pipeline scripts and data
-  # temp - Path for analysis results
-
-
-  # Connect to HPC cluster
-  ssh USER_NAME@SERVER_ADDRESS
-  screen -S GI # Set up a screen to allow getting back to the analysis
-  # screen -r -d GI # Restore existing screen to resume previous analysis
-  module purge;module add R/common/3.3.1;R
-  install.packages(pkgs = c('Rcpp','survival','rslurm','foreach','doMC','data.table','igraph','survcomp'))
-
-  # ____________________________________________________________________________________________________________________________________________________________
-  #
-  # Configure analysis paths and parameters
-  # ____________________________________________________________________________________________________________________________________________________________
-
-  r.package.path # Define path for the downloaded pipeline scripts and data
-  temp   # Define path for analysis results set by user
-
-  dataset = 'pancancer.drivers' # dataset/project name to be used as an analysis folder
-  p.val.quantile.threshold = 0.8 # Log-Rank threshold (p value quantile)
-  
-  queues   = 'high_throughput' # SLURM HPC queue
-  memory   = '8GB' # Memory allocation per job
-  walltime = '8:00:00' # Time limit per job
-  num.jobs = 100 # Number of jobs
-
   source(file.path(scripts,'main.script.functions.R'))
 
   results.path = file.path(temp,dataset)
