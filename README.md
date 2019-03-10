@@ -48,8 +48,8 @@ source("https://bioconductor.org/biocLite.R"); biocLite("survcomp")
 Verify successful installation.
 
 ### Define relevant analysis paths (in R)
-*r.package.path* = 'USER_SET_PACKAGE_PATH' # Define path for the downloaded pipeline scripts and data  
-*results.path* = 'USER_SET_ANALYSIS_DIRECTORY_PATH' # Define path for analysis results set by user  
+*r.package.path* = 'USER_SET_PACKAGE_PATH' # Define path for the downloaded pipeline scripts and data (Example: '/USER/SPAGEfinder')  
+*results.path* = 'USER_SET_ANALYSIS_DIRECTORY_PATH' # Define path for analysis results set by user (Example: '/USER/analysis/TCGA_analysis')  
 
 ### Assign values to additional analysis and slurm parameters
 
@@ -75,4 +75,4 @@ The function preprocess.genomic.data (r.package.path) can be used to process and
 *time* - patient survival as number of days to death  
 *status* - patient death/alive status as 0 or 1, respectively  
 
-The annotation of samples, type, sex and race is not important as long as these are factors.
+The annotation or format of *samples, type, sex and race* is not important as long as the variables are converted to factors.
