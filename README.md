@@ -66,13 +66,13 @@ Continue analysis by executing the commands in 'R/main.script.R'
 
 ### Creating new datasets for analysis
 The function preprocess.genomic.data (r.package.path) can be used to process and perform binning of a 'dataset' object located at 'data/dataset.RData') and constructed in the following fields:  
-*mRNA* - RSEM normalized mRNA measurements (rows corresponding to genes and columns to samples)  
-*scna* - copy-number variation measurements (rows corresponding to genes and columns to samples)  
-*samples* - sample IDs as factors
-*type* - cancer types as factors
-*sex* - sex annotation as (two) factors
-*race* - race annotation as factors
-*time* - patient survival as number of days to death  
-*status* - patient death/alive status as 0 or 1, respectively  
+- *mRNA* - RSEM normalized mRNA measurements (rows corresponding to genes and columns to samples)  
+- *scna* - copy-number variation measurements (rows corresponding to genes and columns to samples)  
+- *samples* - sample IDs as factors
+- *type* - cancer types as factors
+- *sex* - sex annotation as (two) factors
+- *race* - race annotation as factors
+- *time* - patient survival as number of days to death  
+- *status* - patient death/alive status as 0 or 1, respectively  
 
 The annotation or format of *samples, type, sex and race* is not important as long as the variables are converted to factors.
