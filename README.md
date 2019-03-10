@@ -1,6 +1,6 @@
 # SPAGE-finder Manual (Brief version)
 
-This repository contains code and coumentation for a multi-step computational pipeline to search for Survival associated Pairwise Gene Expression states finder (SPAGE-finder).
+This repository contains code and documentation for a multi-step computational pipeline to search for Survival associated Pairwise Gene Expression states finder (SPAGE-finder).
 Previously, the repository was called EnGIne. The manuscript describing the project can be found at:
 https://www.biorxiv.org/content/10.1101/253120v2
 
@@ -12,9 +12,6 @@ This creates a new directory called SPAGEfinder where this README.md can be foun
 SPAGEfinder has two subdirectories: 
 data
 R  
-
-# Analysis pipeline summary
-See main.script.R for running the analysis.
 
 # Code files
 There are seven code files:
@@ -39,22 +36,22 @@ Final SPAGEs list is generated in a matrix format where each row represents a SP
 
 ### UNIX commands
 Connect to remote server [Example: ssh USER_NAME@SERVER_ADDRESS]  
+git clone https://github.com/asmagen/SPAGEfinder.git  
 Invoke R version 3.3.1 [Example (may be different across systems): module purge; module add R/3.3.1; R]  
 The following commands are set and run in the R environment.
 
 ### Install R packages
-install.packages(pkgs = c('Rcpp','survival','rslurm','foreach','doMC','data.table','igraph'))
-Specify a repository of choice.
-
-if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
-BiocManager::install("survcomp", version = "1.24.0")
+Install the required R packages into the default location (no need to specify where to install).  
+install.packages(pkgs = c('Rcpp','RcppArmadillo','survival','rslurm','foreach','doMC','data.table','igraph','whisker','foreach'))  
+Specify a repository of choice and verify successful installations.
+source("https://bioconductor.org/biocLite.R"); biocLite("survcomp")
+Verify successful installation.
 
 ### Define relevant analysis paths (in R)
-r.package.path = 'USER_SET_PATH' # Define path for the downloaded pipeline scripts and data  
-temp = 'USER_SET_PATH' # Define path for analysis results set by user  
+r.package.path = 'USER_SET_PACKAGE_PATH' # Define path for the downloaded pipeline scripts and data  
+results.path = 'USER_SET_ANALYSIS_DIRECTORY_PATH' # Define path for analysis results set by user  
 
 ### Change analysis parameters if defaults are inappropriate for the dataset  
-dataset = 'pancancer.drivers'# dataset/project name to be used as an analysis folder  
 p.val.quantile.threshold = 0.8 # Log-Rank threshold (p value quantile)  
 
 queues   = 'high_throughput' # SLURM HPC queue  
