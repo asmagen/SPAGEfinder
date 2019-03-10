@@ -68,9 +68,11 @@ Continue analysis by executing the commands in 'R/main.script.R'
 The function preprocess.genomic.data (r.package.path) can be used to process and perform binning of a 'dataset' object located at 'data/dataset.RData') and constructed in the following fields:  
 *mRNA* - RSEM normalized mRNA measurements (rows corresponding to genes and columns to samples)  
 *scna* - copy-number variation measurements (rows corresponding to genes and columns to samples)  
-*samples* - sample IDs as factors (annotation is not important as long as these are factors)  
-*type* - cancer types as factors (annotation is not important as long as these are factors)  
-*sex* - sex annotation as (two) factors (annotation Female / Male format is not important as long as these are two factors)  
-*race* - race annotation as factors (annotation is not important as long as these are factors)  
+*samples* - sample IDs as factors
+*type* - cancer types as factors
+*sex* - sex annotation as (two) factors
+*race* - race annotation as factors
 *time* - patient survival as number of days to death  
 *status* - patient death/alive status as 0 or 1, respectively  
+
+The annotation of samples, type, sex and race is not important as long as these are factors.
