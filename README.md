@@ -43,8 +43,8 @@ The following commands are set and run in the R environment.
 ### Install R packages
 Install the required R packages into the default location (no need to specify where to install).  
 install.packages(pkgs = c('Rcpp','RcppArmadillo','survival','rslurm','foreach','doMC','data.table','igraph','whisker','foreach'))  
-Specify a repository of choice and verify successful installations.
-source("https://bioconductor.org/biocLite.R"); biocLite("survcomp")
+Specify a repository of choice and verify successful installations.  
+source("https://bioconductor.org/biocLite.R"); biocLite("survcomp")  
 Verify successful installation.
 
 ### Define relevant analysis paths (in R)
