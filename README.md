@@ -1,4 +1,4 @@
-# SPAGE-finder Manual (Brief version)
+# SPAGE-finder Manual (*Magen et al*)
 
 This repository contains code and documentation for a multi-step computational pipeline to search for Survival associated Pairwise Gene Expression states finder (SPAGE-finder).
 Previously, the repository was called EnGIne. The manuscript describing the project can be found at:
@@ -23,7 +23,7 @@ There are seven code files:
 - main.script.R 
 - merge.pancancer.results.R
 
-Six of these are in R and one in C++
+Six of these are in R and one in C++.
 The C++ code is compiled from within R. Therefore, one need not compile it before running the pipeline.
 
 ## Input format
