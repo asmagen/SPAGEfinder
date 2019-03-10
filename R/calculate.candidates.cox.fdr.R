@@ -1,15 +1,12 @@
 
-calculate.candidates.cox.fdr <- function(r.package.path,temp,dataset,datatype,support,workers,id) {
+calculate.candidates.cox.fdr <- function(r.package.path,results.path,workers,id) {
 
   print('calculate.candidates.cox.fdr')
 
   cat(date(),'\n')
   
   print(r.package.path)
-  print(temp)
-  print(dataset)
-  print(datatype)
-  print(workers)
+  print(results.path)
   print(support)
   print(id)
 
@@ -32,10 +29,8 @@ calculate.candidates.cox.fdr <- function(r.package.path,temp,dataset,datatype,su
     return(list(signed.delta.loglik=signed.delta.loglik,effect.size=effect.size))
   }
 
-  results.path = file.path(temp,dataset)
-
   cat('Loading candidates\n')
-  load(file.path(results.path,paste(datatype,'candidates.base.cox.significance.pancancer.results.RData',sep='.')))
+  load(file.path(results.path,'candidates.base.cox.significance.pancancer.results.RData'))
   head(candidates.base.cox.significance)
   nrow(candidates.base.cox.significance)
   str(shuffled.candidates)
@@ -64,13 +59,7 @@ calculate.candidates.cox.fdr <- function(r.package.path,temp,dataset,datatype,su
 
   cat('Loading data for cox\n')
 
-  if( support == 1 ) {
-    load(file = 
-    file.path(r.package.path,'data',
-              paste('data',ifelse(datatype=='mRNA','scna','mRNA'),'RData',sep='.')))
-  } else {
-    load(file = file.path(r.package.path,'data',paste('data',datatype,'RData',sep='.')))
-  }
+  load(file = file.path(r.package.path,'data','data.mRNA.RData'))
 
   suppressMessages(library(survival))
   suppressMessages(library(survcomp))
@@ -123,9 +112,9 @@ calculate.candidates.cox.fdr <- function(r.package.path,temp,dataset,datatype,su
   o.start.time <- Sys.time()
   if( id > 1 ) {
     if( support == 1 ) {
-      prev.candidates.signed.delta.loglik.res = file.path(results.dir,paste(datatype,'support.candidates.signed.delta.loglik',mapped.bin,id-1,'pancancer.results.RData',sep='.'))  
+      prev.candidates.signed.delta.loglik.res = file.path(results.dir,'support.candidates.signed.delta.loglik',mapped.bin,id-1,'pancancer.results.RData')  
     } else {
-      prev.candidates.signed.delta.loglik.res = file.path(results.dir,paste(datatype,'candidates.signed.delta.loglik',mapped.bin,id-1,'pancancer.results.RData',sep='.'))
+      prev.candidates.signed.delta.loglik.res = file.path(results.dir,'candidates.signed.delta.loglik',mapped.bin,id-1,'pancancer.results.RData')
     }
     
     if(!file.exists(file = prev.candidates.signed.delta.loglik.res)) {
@@ -155,9 +144,9 @@ calculate.candidates.cox.fdr <- function(r.package.path,temp,dataset,datatype,su
     if( id == workers ){
       cat('Saving merged file',id,'\n')
       if( support == 1 ) {
-        candidates.signed.delta.loglik.res = file.path(results.path,paste(datatype,'support.candidates.signed.delta.loglik',mapped.bin,'pancancer.results.RData',sep='.'))
+        candidates.signed.delta.loglik.res = file.path(results.path,'support.candidates.signed.delta.loglik',mapped.bin,'pancancer.results.RData')
       } else {
-        candidates.signed.delta.loglik.res = file.path(results.path,paste(datatype,'candidates.signed.delta.loglik',mapped.bin,'pancancer.results.RData',sep='.'))
+        candidates.signed.delta.loglik.res = file.path(results.path,'candidates.signed.delta.loglik',mapped.bin,'pancancer.results.RData')
       }
       
       save(candidates.signed.delta.loglik,shuffled.candidates.signed.delta.loglik,effect.size,shuffled.effect.size,file = candidates.signed.delta.loglik.res)
@@ -165,9 +154,9 @@ calculate.candidates.cox.fdr <- function(r.package.path,temp,dataset,datatype,su
   }
   cat('Saving',id,'\n')
   if( support == 1 ) {
-    candidates.signed.delta.loglik.res = file.path(results.dir,paste(datatype,'support.candidates.signed.delta.loglik',mapped.bin,id,'pancancer.results.RData',sep='.'))
+    candidates.signed.delta.loglik.res = file.path(results.dir,'support.candidates.signed.delta.loglik',mapped.bin,id,'pancancer.results.RData')
   } else {
-    candidates.signed.delta.loglik.res = file.path(results.dir,paste(datatype,'candidates.signed.delta.loglik',mapped.bin,id,'pancancer.results.RData',sep='.'))
+    candidates.signed.delta.loglik.res = file.path(results.dir,'candidates.signed.delta.loglik',mapped.bin,id,'pancancer.results.RData')
   }
   save(id,bin,candidates.signed.delta.loglik,shuffled.candidates.signed.delta.loglik,file = candidates.signed.delta.loglik.res)
   print(Sys.time() - o.start.time)

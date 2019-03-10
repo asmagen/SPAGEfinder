@@ -14,17 +14,9 @@ create.folders <- function( results.path ) {
     results.path, 
     recursive = TRUE, showWarnings = FALSE )
 
-  dir.create( 
-    file.path(results.path,'output'), 
-    recursive = TRUE, showWarnings = FALSE )
-
   results = file.path(results.path,'results')
   dir.create( 
     results, 
-    recursive = TRUE, showWarnings = FALSE )
-
-  dir.create( 
-    file.path(results.path,'plots'), 
     recursive = TRUE, showWarnings = FALSE )
 
   return(results)
@@ -152,14 +144,14 @@ get.bin.quantile.intervals <- function(c,quantiles,recursion = 1) {
   return(intervals)
 }
 
-run.distributed.pairwise.significance <- function( r.package.path,temp,dataset,results.path,queues,num.jobs,memory,walltime ) {
+run.distributed.pairwise.significance <- function( r.package.path,results.path,queues,num.jobs,memory,walltime ) {
 
   output.path = file.path(results.path,'output')
 
   setwd(results.path)
   source(file.path(r.package.path,'R','analyze.pairwise.significance.R'))
   library(rslurm,quietly=T)
-  params = data.frame(r.package.path,temp,dataset,datatype='mRNA',workers=num.jobs,id=seq(num.jobs));head(params)
+  params = data.frame(r.package.path,results.path,workers=num.jobs,id=seq(num.jobs));head(params)
   sopt <- list(qos = queues, mem = memory, time = walltime, share = TRUE)
   setwd(results.path);getwd()
   job.ids <- slurm_apply(analyze.pairwise.significance, params, nodes = nrow(params), cpus_per_node = 1, submit = TRUE, slurm_options = sopt)
@@ -168,18 +160,18 @@ run.distributed.pairwise.significance <- function( r.package.path,temp,dataset,r
   return(job.ids)
 }
 
-merge.clinical.results <- function( temp,r.package.path,dataset,p.val.quantile.threshold,base.res.path,results.path,large.queues,memory,walltime ) {
+merge.clinical.results <- function( r.package.path,results.path,p.val.quantile.threshold,large.queues,memory,walltime ) {
 
   start.time <- Sys.time()
 
-  output.path = file.path(base.res.path,'output')
+  output.path = file.path(results.path,'output')
 
   cat('Merging pancancer results\n')
 
   setwd(results.path)
   source(file.path(r.package.path,'R','merge.pancancer.results.R'))
   library(rslurm,quietly=T)
-  params = data.frame(r.package.path,temp,dataset,datatype='mRNA',num.jobs,p.val.quantile.threshold);head(params)
+  params = data.frame(r.package.path,results.path,num.jobs,p.val.quantile.threshold);head(params)
   sopt <- list(qos = large.queues, mem = memory, time = walltime, share = TRUE)
   setwd(results.path);getwd()
   job.ids <- slurm_apply(merge.pancancer.results, params, nodes = 1, cpus_per_node = 1, submit = TRUE, slurm_options = sopt)
@@ -191,7 +183,12 @@ merge.clinical.results <- function( temp,r.package.path,dataset,p.val.quantile.t
 }
 
 calculate.null.molecular <- function (
-  temp,dataset,null.molecular.file,shuffle.frac = 0.1) {
+  r.package.path,results.path,shuffle.frac = 0.1) {
+
+  null.molecular.file = file.path(results.path,'null.molecular.RData')
+  if( file.exists(null.molecular.file) ) {
+    return()
+  }
 
   load(file = file.path(r.package.path,'data','data.mRNA.RData'))
 
@@ -218,7 +215,7 @@ calculate.null.molecular <- function (
   save(quantiles,stats,file = null.molecular.file)
 }
 
-calculate.base.cox.model <- function( r.package.path,temp,dataset,results.path,queues,num.jobs,memory,walltime ) {
+calculate.base.cox.model <- function( r.package.path,results.path,queues,num.jobs,memory,walltime ) {
 
   cat('Calculating base cox model\n')
 
@@ -240,7 +237,7 @@ calculate.base.cox.model <- function( r.package.path,temp,dataset,results.path,q
   setwd(results.path)
   source(file.path(r.package.path,'R','calculate.base.cox.model.R'))
   library(rslurm,quietly=T)
-  params = data.frame(r.package.path,temp,dataset,datatype='mRNA',workers=num.jobs,id=seq(num.jobs));head(params)
+  params = data.frame(r.package.path,results.path,workers=num.jobs,id=seq(num.jobs));head(params)
   sopt <- list(qos = queues, mem = memory, time = walltime, share = TRUE)
   setwd(results.path);getwd()
   job.ids <- slurm_apply(calculate.base.cox.model, params, nodes = nrow(params), cpus_per_node = 1, submit = TRUE, slurm_options = sopt)
@@ -249,7 +246,7 @@ calculate.base.cox.model <- function( r.package.path,temp,dataset,results.path,q
   return(job.ids)
 }
 
-calculate.candidates.cox.fdr <- function( r.package.path,temp,dataset,results.path,queues,num.jobs,memory,walltime ) {
+calculate.candidates.cox.fdr <- function( r.package.path,results.path,queues,num.jobs,memory,walltime ) {
 
   cat('Calculating candidates cox fdr\n')
 
@@ -270,7 +267,7 @@ calculate.candidates.cox.fdr <- function( r.package.path,temp,dataset,results.pa
   setwd(results.path)
   source(file.path(r.package.path,'R','calculate.candidates.cox.fdr.R'))
   library(rslurm,quietly=T)
-  params = data.frame(r.package.path,temp,dataset,datatype='mRNA',support,workers=num.jobs,id=seq(num.jobs));head(params)
+  params = data.frame(r.package.path,results.path,workers=num.jobs,id=seq(num.jobs));head(params)
   sopt <- list(qos = queues, mem = memory, time = walltime, share = TRUE)
   setwd(results.path);getwd()
   job.ids <- slurm_apply(calculate.candidates.cox.fdr, params, nodes = nrow(params), cpus_per_node = 1, submit = TRUE, slurm_options = sopt)
@@ -280,7 +277,7 @@ calculate.candidates.cox.fdr <- function( r.package.path,temp,dataset,results.pa
 }
 
 
-get.final.GIs <- function( temp,data,results.path,LLR.threshold,PPI = F ) {
+get.final.GIs <- function( r.package.path,results.path,LLR.threshold,PPI = F ) {
   
   cat('______________________________________________________________\n')
   start.time <- Sys.time()
@@ -305,7 +302,7 @@ get.final.GIs <- function( temp,data,results.path,LLR.threshold,PPI = F ) {
       cat('Calculating PPI distances\n')
       pairs = cbind(genes[selected.functional.states[,1]],genes[selected.functional.states[,2]])
       library(data.table)
-      ppi = fread(file.path(data,'hippie_current.txt'))
+      ppi = fread(file.path(r.package.path,'data','hippie_current.txt'))
       ppi = cbind(sapply(ppi$V1,function(g) strsplit(g,'_')[[1]][1]),sapply(ppi$V3,function(g) strsplit(g,'_')[[1]][1]))
       rownames(ppi) = NULL
       ppi = ppi[ppi[,1]!=ppi[,2],]

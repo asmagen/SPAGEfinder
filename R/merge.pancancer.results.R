@@ -1,5 +1,5 @@
 
-merge.pancancer.results <- function(r.package.path,temp,dataset,datatype,num.jobs,p.val.quantile.threshold) {
+merge.pancancer.results <- function(r.package.path,results.path,num.jobs,p.val.quantile.threshold) {
  
  print('merge.pancancer.results')
 
@@ -8,29 +8,23 @@ merge.pancancer.results <- function(r.package.path,temp,dataset,datatype,num.job
  overall.start.time = Sys.time()
 
  print(r.package.path)
- print(temp)
- print(dataset)
- print(datatype)
+ print(results.path)
  print(num.jobs)
  cat('p.val.quantile.threshold =',p.val.quantile.threshold,'\n')
 
-  results.path = file.path(temp,dataset)
-
   res.file.path = file.path(results.path,'results')
 
-  candidates.file = file.path(results.path,paste(datatype,'candidates.pancancer.results.RData',sep='.'))
-  quantiles.file = file.path(results.path,paste(datatype,'quantiles.pancancer.results.RData',sep='.'))
-  merged = file.path(results.path,paste(datatype,'merged.clinical.pancancer.results.RData',sep='.'))
+  candidates.file = file.path(results.path,'mRNA.candidates.pancancer.results.RData')
+  quantiles.file = file.path(results.path,'mRNA.quantiles.pancancer.results.RData')
+  merged = file.path(results.path,'mRNA.merged.clinical.pancancer.results.RData')
   if( !file.exists(file = candidates.file) ) {
 
     if( !file.exists(file = quantiles.file) ) {
 
      if( !file.exists(file = merged) ) {
 
-       file.list = list.files(res.file.path,
-                            pattern = 
-                               paste(datatype,'clinical.*.RData',
-                                 sep='.'))
+       file.list = list.files(res.file.path,pattern = 'mRNA.clinical.*.RData')
+       
        file.list = file.list[
                      order(
                        as.numeric(

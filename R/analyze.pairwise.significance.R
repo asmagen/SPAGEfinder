@@ -1,31 +1,22 @@
 
-analyze.pairwise.significance <- function(r.package.path,temp,dataset,datatype,workers,id) {
+analyze.pairwise.significance <- function(r.package.path,results.path,workers,id) {
 
   print('analyze pairwise significance')
 
   cat(date(),'\n')
 
   print(r.package.path)
-  print(temp)
-  print(dataset)
-  print(datatype)
+  print(results.path)
   print(workers)
   print(id)
 
-  base.work.dir = file.path(temp,dataset)
-
   analyse.datatype.significance <- function(
       r.package.path,
-      base.work.dir,
-      datatype,
+      results.path,
       workers,
       id) {
 
-    cat(datatype,'analysis\n')
-
-    load(file = 
-      file.path(r.package.path,'data',
-                paste('data',datatype,'RData',sep='.')))
+    load(file = file.path(r.package.path,'data','data.mRNA.RData'))
 
     cancerType = clinical$type
     typeInx         = factor(cancerType)
@@ -42,7 +33,7 @@ analyze.pairwise.significance <- function(r.package.path,temp,dataset,datatype,w
     rows = end-start
 
     library(Rcpp)
-    sourceCpp(file.path(r.package.path,"R/aggregateLogRankGene.cpp"))
+    sourceCpp(file.path(r.package.path,'R',"aggregateLogRankGene.cpp"))
     
     cat('Pairwise analysis',start,end-1,'\n')
     start.time <- Sys.time()
@@ -65,9 +56,9 @@ analyze.pairwise.significance <- function(r.package.path,temp,dataset,datatype,w
 
     cat('Save clinical\n')
     save(clinical.p.vals,start,
-    file = file.path(base.work.dir,
+    file = file.path(results.path,
                       'results',
-                      paste(datatype,'clinical',id,'RData',
+                      paste('mRNA.clinical',id,'RData',
                         sep = ".")))
 
     print(Sys.time() - start.time)
@@ -97,8 +88,7 @@ analyze.pairwise.significance <- function(r.package.path,temp,dataset,datatype,w
 
     analyse.datatype.significance(
       r.package.path,
-      base.work.dir,
-      datatype = datatype,
+      results.path,
       workers,
       id
     )

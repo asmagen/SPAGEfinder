@@ -1,13 +1,11 @@
-calculate.base.cox.model <- function(r.package.path,temp,dataset,datatype,workers,id) {
+calculate.base.cox.model <- function(r.package.path,results.path,workers,id) {
 
   print('calculate.base.cox.model')
 
   cat(date(),'\n')
   
   print(r.package.path)
-  print(temp)
-  print(dataset)
-  print(datatype)
+  print(results.path)
   print(workers)
   print(id)
 
@@ -85,18 +83,15 @@ calculate.base.cox.model <- function(r.package.path,temp,dataset,datatype,worker
       return(shuffled.pairs)
   }
 
-
-  results.path = file.path(temp,dataset)
-
   cat('Loading data\n')
-  load(file = file.path(r.package.path,'data',paste('data',datatype,'RData',sep='.')))
+  load(file = file.path(r.package.path,'data','data.mRNA.RData'))
 
   cat('Loading candidates\n')
-  load(file.path(results.path,paste(datatype,'candidates.pancancer.results.RData',sep='.')))
+  load(file.path(results.path,'mRNA.candidates.pancancer.results.RData'))
   molecular.stats = NA
 
   library(data.table)
-  load(file.path(temp,dataset,'null.molecular.RData'))
+  load(file.path(results.path,'null.molecular.RData'))
 
   molecular.quantiles = apply(stats,2,function(v) quantile(v,c(0.45,0.55),na.rm=T))
   molecular.quantiles
@@ -146,7 +141,7 @@ calculate.base.cox.model <- function(r.package.path,temp,dataset,datatype,worker
 
   o.start.time <- Sys.time()
   if( id > 1 ) {
-    prev.candidates.base.cox.significance.res = file.path(results.dir,paste(datatype,'candidates.base.cox.significance',id-1,'pancancer.results.RData',sep='.'))
+    prev.candidates.base.cox.significance.res = file.path(results.dir,'mRNA.candidates.base.cox.significance',id-1,'pancancer.results.RData')
     if(!file.exists(file = prev.candidates.base.cox.significance.res)) {
       cat('Waiting for',id-1,'to finish\n')
       while( !file.exists(prev.candidates.base.cox.significance.res) ){ Sys.sleep(1) }
@@ -191,14 +186,14 @@ calculate.base.cox.model <- function(r.package.path,temp,dataset,datatype,worker
       }
 
       cat('Saving merged file',id,'\n')
-      candidates.base.cox.significance.res = file.path(results.path,paste(datatype,'candidates.base.cox.significance.pancancer.results.RData',sep='.'))
+      candidates.base.cox.significance.res = file.path(results.path,'mRNA.candidates.base.cox.significance.pancancer.results.RData')
       save(candidates.base.cox.significance,shuffled.candidates,file = candidates.base.cox.significance.res)
     }
   }
   cat('Bin Base Significant Column Sums\n');print(colSums(candidates.base.cox.significance[,3:ncol(candidates.base.cox.significance)]))
   print(head(candidates.base.cox.significance,20))
   cat('Saving',id,'\n')
-  candidates.base.cox.significance.res = file.path(results.dir,paste(datatype,'candidates.base.cox.significance',id,'pancancer.results.RData',sep='.'))
+  candidates.base.cox.significance.res = file.path(results.dir,'mRNA.candidates.base.cox.significance',id,'pancancer.results.RData')
   save(id,candidates.base.cox.significance,file = candidates.base.cox.significance.res)
   print(Sys.time() - o.start.time)
 
