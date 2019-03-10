@@ -53,7 +53,7 @@ Verify successful installation.
 
 ### Assign values to additional analysis and slurm parameters
 
-The suggested values shown below may be changed by the user.  
+The suggested values shown below may be adjusted by the user as needed.  
 
 *p.val.quantile.threshold* = 0.8 # Log-Rank threshold (p value quantile)  
 
