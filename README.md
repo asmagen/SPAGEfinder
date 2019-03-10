@@ -5,23 +5,23 @@ Previously, the repository was called EnGIne. The manuscript describing the proj
 https://www.biorxiv.org/content/10.1101/253120v2
 
 The repository can be retrieved from GitHub via the command
-git clone https://github.com/asmagen/SPAGEfinder
+*git clone https://github.com/asmagen/SPAGEfinder*
 
 This creates a new directory called SPAGEfinder where this README.md can be found.
 
 SPAGEfinder has two subdirectories: 
-data
-R  
+1. data
+2. R  
 
 # Code files
 There are seven code files:
-aggregateLogRankGene.cpp
-analyze.pairwise.significance.R  
-calculate.base.cox.model.R  
-calculate.candidates.cox.fdr.R  
-main.script.functions.R  
-main.script.R 
-merge.pancancer.results.R
+- aggregateLogRankGene.cpp
+- analyze.pairwise.significance.R  
+- calculate.base.cox.model.R  
+- calculate.candidates.cox.fdr.R  
+- main.script.functions.R  
+- main.script.R 
+- merge.pancancer.results.R
 
 Six of these are in R and one in C++
 The C++ code is compiled from within R. Therefore, one need not compile it before running the pipeline.
@@ -48,26 +48,29 @@ source("https://bioconductor.org/biocLite.R"); biocLite("survcomp")
 Verify successful installation.
 
 ### Define relevant analysis paths (in R)
-r.package.path = 'USER_SET_PACKAGE_PATH' # Define path for the downloaded pipeline scripts and data  
-results.path = 'USER_SET_ANALYSIS_DIRECTORY_PATH' # Define path for analysis results set by user  
+*r.package.path* = 'USER_SET_PACKAGE_PATH' # Define path for the downloaded pipeline scripts and data  
+*results.path* = 'USER_SET_ANALYSIS_DIRECTORY_PATH' # Define path for analysis results set by user  
 
-### Change analysis parameters if defaults are inappropriate for the dataset  
-p.val.quantile.threshold = 0.8 # Log-Rank threshold (p value quantile)  
+### Assign values to additional analysis and slurm parameters
 
-queues   = 'high_throughput' # SLURM HPC queue  
-memory   = '8GB' # Memory allocation per job  
-walltime = '8:00:00' # Time limit per job  
-num.jobs = 100 # Number of jobs  
+The suggested values shown below may be changed by the user.  
+
+*p.val.quantile.threshold* = 0.8 # Log-Rank threshold (p value quantile)  
+
+*queues*   = 'high_throughput' # SLURM HPC queue  
+*memory*   = '8GB' # Memory allocation per job  
+*walltime* = '8:00:00' # Time limit per job  
+*num.jobs* = 100 # Number of jobs  
 
 Continue analysis by executing the commands in 'R/main.script.R'
 
 ### Creating new datasets for analysis
-The function preprocess.genomic.data (r.package.path) can be used to process and perform binning of a 'dataset' object located at 'data/dataset.RData') and constructed in the following format:  
-mRNA field containing RSEM normalized mRNA measurements (rows corresponding to genes and columns to samples)  
-scna field containing copy-number variation measurements (rows corresponding to genes and columns to samples)  
-samples field containing sample IDs as factors  
-type field containing cancer types as factors  
-sex field containing sex annotation as factors  
-race field containing race annotation as factors  
-time field containing patient survival as number of days to death  
-status field containing patient death/alive status as 0 or 1, respectively  
+The function preprocess.genomic.data (r.package.path) can be used to process and perform binning of a 'dataset' object located at 'data/dataset.RData') and constructed in the following fields:  
+*mRNA* - RSEM normalized mRNA measurements (rows corresponding to genes and columns to samples)  
+*scna* - copy-number variation measurements (rows corresponding to genes and columns to samples)  
+*samples* - sample IDs as factors  
+*type* - cancer types as factors  
+*sex* - sex annotation as factors  
+*race* - race annotation as factors  
+*time* - patient survival as number of days to death  
+*status* - patient death/alive status as 0 or 1, respectively  
