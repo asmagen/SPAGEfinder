@@ -141,7 +141,7 @@ calculate.base.cox.model <- function(r.package.path,results.path,workers,id) {
 
   o.start.time <- Sys.time()
   if( id > 1 ) {
-    prev.candidates.base.cox.significance.res = file.path(results.dir,'mRNA.candidates.base.cox.significance',id-1,'pancancer.results.RData')
+    prev.candidates.base.cox.significance.res = file.path(results.dir,paste('mRNA.candidates.base.cox.significance',id-1,'pancancer.results.RData',sep='.'))
     if(!file.exists(file = prev.candidates.base.cox.significance.res)) {
       cat('Waiting for',id-1,'to finish\n')
       while( !file.exists(prev.candidates.base.cox.significance.res) ){ Sys.sleep(1) }
@@ -193,7 +193,7 @@ calculate.base.cox.model <- function(r.package.path,results.path,workers,id) {
   cat('Bin Base Significant Column Sums\n');print(colSums(candidates.base.cox.significance[,3:ncol(candidates.base.cox.significance)]))
   print(head(candidates.base.cox.significance,20))
   cat('Saving',id,'\n')
-  candidates.base.cox.significance.res = file.path(results.dir,'mRNA.candidates.base.cox.significance',id,'pancancer.results.RData')
+  candidates.base.cox.significance.res = file.path(results.dir,paste('mRNA.candidates.base.cox.significance',id,'pancancer.results.RData',sep='.'))
   save(id,candidates.base.cox.significance,file = candidates.base.cox.significance.res)
   print(Sys.time() - o.start.time)
 

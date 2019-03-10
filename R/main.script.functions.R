@@ -288,7 +288,7 @@ get.final.GIs <- function( r.package.path,results.path,LLR.threshold,PPI = F ) {
   bins = c(1:3,5:6,9)
   for( bin in bins ) {
     tryCatch({
-      load(file.path(results.path,paste('mRNA.candidates.signed.delta.loglik',bin,'pancancer.results.RData',sep='.')))
+      load(file.path(results.path,'candidates',paste('mRNA.signed.delta.loglik',bin,'pancancer.results.RData',sep='.')))
       significance.threshold = quantile(abs(shuffled.candidates.signed.delta.loglik[,3]),LLR.threshold,na.rm=T)
       significant = abs(candidates.signed.delta.loglik[,3])>significance.threshold
       selected.functional.states = rbind(selected.functional.states,cbind(candidates.signed.delta.loglik[significant,1:2],bin,candidates.signed.delta.loglik[significant,3]))
@@ -347,7 +347,9 @@ get.final.GIs <- function( r.package.path,results.path,LLR.threshold,PPI = F ) {
   selected.functional.states = as.data.frame(selected.functional.states)
   selected.functional.states[,1] = genes[selected.functional.states[,1]]
   selected.functional.states[,2] = genes[selected.functional.states[,2]]
-  colnames(selected.functional.states)[4] = 'effect'
+  selected.functional.states[,5] = selected.functional.states[,4] * sign(selected.functional.states[,4])
+  selected.functional.states[,4] = -sign(selected.functional.states[,4])
+  colnames(selected.functional.states)[4:5] = c('direction','effect')
 
   cat('States number =',nrow(selected.functional.states),'\n')
 

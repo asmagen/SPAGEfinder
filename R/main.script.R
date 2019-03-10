@@ -28,14 +28,14 @@
   calculate.null.molecular(r.package.path,results.path)
 
   setwd(job.ids$path)
-  get_slurm_out(job.ids,wait = T)
+  slurm_out = get_slurm_out(job.ids,wait = T)
   cleanup_files(job.ids)
 
   # Merge Log-Rank analysis files
   setwd(results.path)
   job.ids = merge.clinical.results (r.package.path,results.path,p.val.quantile.threshold,large.queues = 'large',memory = '120GB',walltime = '3:00:00')
   setwd(job.ids$path)
-  get_slurm_out(job.ids,wait = T)
+  slurm_out = get_slurm_out(job.ids,wait = T)
   cleanup_files(job.ids)
 
   # ____________________________________________________________________________________________________________________________________________________________
@@ -45,7 +45,7 @@
   
   job.ids = calculate.base.cox.model (r.package.path,results.path,queues,num.jobs,memory,walltime)
   setwd(job.ids$path)
-  get_slurm_out(job.ids,wait = T)
+  slurm_out = get_slurm_out(job.ids,wait = T)
   cleanup_files(job.ids)
 
   # ____________________________________________________________________________________________________________________________________________________________
@@ -55,7 +55,7 @@
 
   job.ids = calculate.candidates.cox.fdr (r.package.path,results.path,queues,num.jobs,memory,walltime)
   setwd(job.ids$path)
-  get_slurm_out(job.ids,wait = T)
+  slurm_out = get_slurm_out(job.ids,wait = T)
   cleanup_files(job.ids)
 
   # ____________________________________________________________________________________________________________________________________________________________
@@ -63,7 +63,7 @@
   # Compile final GI list based on FDR quantile
   # ____________________________________________________________________________________________________________________________________________________________
 
-  states = get.final.GIs (temp,data,results.path,LLR.threshold = 0.99,PPI = F)
+  states = get.final.GIs (r.package.path,results.path,LLR.threshold = 0.99,PPI = F)
   head(states,20)
   dim(states)
 
