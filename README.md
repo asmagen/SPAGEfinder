@@ -53,7 +53,7 @@ Verify successful installation.
 
 ### Assign values to additional analysis and slurm parameters
 
-The suggested values shown below may be adjusted by the user as needed.  
+The suggested values shown below may be adjusted by the user as needed. If one reads README.md as a text file, there will be asterisks around the variable names; do not copy the asterisks when copying a command to assign a value to a variable.  
 
 *p.val.quantile.threshold* = 0.8 # Log-Rank threshold (p value quantile)  
 
