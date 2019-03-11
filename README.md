@@ -7,7 +7,7 @@ https://www.biorxiv.org/content/10.1101/253120v2
 The repository can be retrieved from GitHub via the command
 *git clone https://github.com/asmagen/SPAGEfinder*
 
-This creates a new directory called SPAGEfinder where this README.md can be found.
+This creates a new directory called SPAGEfinder where this README.md can be found. If one reads README.md as a text file, there will be asterisks around the variable names; do not copy the asterisks when copying a command to assign a value to a variable.
 
 SPAGEfinder has two subdirectories: 
 1. data
@@ -53,7 +53,7 @@ Verify successful installation.
 
 ### Assign values to additional analysis and slurm parameters
 
-The suggested values shown below may be adjusted by the user as needed. If one reads README.md as a text file, there will be asterisks around the variable names; do not copy the asterisks when copying a command to assign a value to a variable.  
+The suggested values shown below may be adjusted by the user as needed.  
 
 *p.val.quantile.threshold* = 0.8 # Log-Rank threshold (p value quantile)  
 
