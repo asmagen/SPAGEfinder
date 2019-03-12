@@ -105,6 +105,7 @@ calculate.base.cox.model <- function(r.package.path,results.path,workers,id) {
   end = min(id*work,fn)
   nrows = end - start + 1
   rm(fn,work)
+  if (start >= end) return(NA)
 
   suppressMessages(library(survival))
   suppressMessages(library(survcomp))

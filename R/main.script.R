@@ -27,15 +27,12 @@
   
   calculate.null.molecular(r.package.path,results.path)
 
-  setwd(job.ids$path)
-  slurm_out = get_slurm_out(job.ids,wait = T)
+  get_slurm_output(job.ids)
   cleanup_files(job.ids)
 
   # Merge Log-Rank analysis files
-  setwd(results.path)
-  job.ids = merge.clinical.results (r.package.path,results.path,p.val.quantile.threshold,large.queues = 'large',memory = '120GB',walltime = '3:00:00')
-  setwd(job.ids$path)
-  slurm_out = get_slurm_out(job.ids,wait = T)
+  job.ids = merge.clinical.results (r.package.path,results.path,p.val.quantile.threshold,large.queues,large.memory,large.walltime)
+  get_slurm_output(job.ids)
   cleanup_files(job.ids)
 
   # ____________________________________________________________________________________________________________________________________________________________
@@ -44,8 +41,7 @@
   # ____________________________________________________________________________________________________________________________________________________________
   
   job.ids = calculate.base.cox.model (r.package.path,results.path,queues,num.jobs,memory,walltime)
-  setwd(job.ids$path)
-  slurm_out = get_slurm_out(job.ids,wait = T)
+  get_slurm_output(job.ids)
   cleanup_files(job.ids)
 
   # ____________________________________________________________________________________________________________________________________________________________
@@ -54,19 +50,18 @@
   # ____________________________________________________________________________________________________________________________________________________________
 
   job.ids = calculate.candidates.cox.fdr (r.package.path,results.path,queues,num.jobs,memory,walltime)
-  setwd(job.ids$path)
-  slurm_out = get_slurm_out(job.ids,wait = T)
+  get_slurm_output(job.ids)
   cleanup_files(job.ids)
 
   # ____________________________________________________________________________________________________________________________________________________________
   #
-  # Compile final GI list based on FDR quantile
+  # Compile final SPAGEs list
   # ____________________________________________________________________________________________________________________________________________________________
 
-  states = get.final.GIs (r.package.path,results.path,LLR.threshold = 0.99,PPI = F)
+  states = get.final.SPAGEs (r.package.path,results.path,FDR.threshold = 0.99,apply.PPI.filter = F) # Obtain the final set of SPAGEs based on FDR threshold = 0.99 and without applying the PPI filter
   head(states,20)
   dim(states)
 
-  print(round(table(states[,3]*sign(states[,4]))/nrow(states),2))
+  print(round(table(states[,3]*sign(states[,4]))/nrow(states),2)) # Summarize SPAGE type distribution
 
   write.csv(states,file = file.path(results.path,'SPAGEs.csv'))

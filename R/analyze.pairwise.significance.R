@@ -31,6 +31,7 @@ analyze.pairwise.significance <- function(r.package.path,results.path,workers,id
     start = indices[1]
     end = indices[2]
     rows = end-start
+    if (start >= end) return(NA)
 
     library(Rcpp)
     sourceCpp(file.path(r.package.path,'R',"aggregateLogRankGene.cpp"))

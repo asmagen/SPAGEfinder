@@ -57,6 +57,8 @@ calculate.candidates.cox.fdr <- function(r.package.path,results.path,workers,id)
   if( id == workers ) end = fn
   nrows = end - start + 1
 
+  if (start >= end) return(NA)
+
   cat('Loading data for cox\n')
 
   load(file = file.path(r.package.path,'data','data.mRNA.RData'))

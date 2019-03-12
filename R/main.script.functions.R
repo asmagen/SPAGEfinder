@@ -93,27 +93,27 @@ qnorm.col <- function(gene.exp.resid)
 }
 
 get.bin.intervals <- function(c,nbins,recursion = 1) {
-	
-	binp = seq(from = 0, to = 1, by = 1/nbins)
-	b   = unique(quantile(c,binp,na.rm=TRUE))
+  
+  binp = seq(from = 0, to = 1, by = 1/nbins)
+  b   = unique(quantile(c,binp,na.rm=TRUE))
   if(length(b[which(!is.na(b))])==0) return(NA)
-	add = 0
-	if( b[1] == 0 ) add = 1
-	b = b[b!=0]
-	if( add == 1 ) b = c(0,b)
-	if( length(b) < nbins-1 ) return(NA)
-	bin = b[1:(length(b)-1)]
-	
-	intervals = findInterval(c, bin)-1
-	counts    = table(intervals)
+  add = 0
+  if( b[1] == 0 ) add = 1
+  b = b[b!=0]
+  if( add == 1 ) b = c(0,b)
+  if( length(b) < nbins-1 ) return(NA)
+  bin = b[1:(length(b)-1)]
+  
+  intervals = findInterval(c, bin)-1
+  counts    = table(intervals)
 
-	len = length(c)
-	if( max(abs(counts-(len/nbins))) > max(1,0.005*len)
+  len = length(c)
+  if( max(abs(counts-(len/nbins))) > max(1,0.005*len)
           && recursion > 0 ) {
     noise = sd(c)/100
-		c = c + runif(len, -noise, noise)
-		return(get.bin.intervals(c,nbins,recursion-1))
-	}
+    c = c + runif(len, -noise, noise)
+    return(get.bin.intervals(c,nbins,recursion-1))
+  }
 
   return(intervals)
 }
@@ -146,40 +146,50 @@ get.bin.quantile.intervals <- function(c,quantiles,recursion = 1) {
 
 run.distributed.pairwise.significance <- function( r.package.path,results.path,queues,num.jobs,memory,walltime ) {
 
-  output.path = file.path(results.path,'output')
+  clear.previous.results(file.path(results.path,'results'))
 
   setwd(results.path)
   source(file.path(r.package.path,'R','analyze.pairwise.significance.R'))
   library(rslurm,quietly=T)
   params = data.frame(r.package.path,results.path,workers=num.jobs,id=seq(num.jobs));head(params)
-  sopt <- list(qos = queues, mem = memory, time = walltime, share = TRUE)
+  if (is.na(queues)) {
+    sopt <- list(mem = memory, time = walltime, share = TRUE)
+  } else {
+    sopt <- list(qos = queues, mem = memory, time = walltime, share = TRUE)
+  }
   setwd(results.path);getwd()
   job.ids <- slurm_apply(analyze.pairwise.significance, params, nodes = nrow(params), cpus_per_node = 1, submit = TRUE, slurm_options = sopt)
   job.ids$path = getwd()
-  setwd(file.path(r.package.path,'R'));source('main.script.functions.R')
+  source(file.path(r.package.path,'R','main.script.functions.R'))
+  setwd(file.path(results.path))
+  cat('\nRun calculate.null.molecular\n')
   return(job.ids)
 }
 
-merge.clinical.results <- function( r.package.path,results.path,p.val.quantile.threshold,large.queues,memory,walltime ) {
+merge.clinical.results <- function( r.package.path,results.path,p.val.quantile.threshold,large.queues,large.memory,large.walltime ) {
 
   start.time <- Sys.time()
 
   output.path = file.path(results.path,'output')
 
-  cat('Merging pancancer results\n')
-
   setwd(results.path)
   source(file.path(r.package.path,'R','merge.pancancer.results.R'))
   library(rslurm,quietly=T)
   params = data.frame(r.package.path,results.path,num.jobs,p.val.quantile.threshold);head(params)
-  sopt <- list(qos = large.queues, mem = memory, time = walltime, share = TRUE)
+  if (is.na(large.queues)) {
+    sopt <- list(mem = large.memory, time = large.walltime, share = TRUE)
+  } else {
+    sopt <- list(qos = large.queues, mem = large.memory, time = large.walltime, share = TRUE)
+  }
   setwd(results.path);getwd()
   job.ids <- slurm_apply(merge.pancancer.results, params, nodes = 1, cpus_per_node = 1, submit = TRUE, slurm_options = sopt)
   job.ids$path = getwd()
-  setwd(file.path(r.package.path,'R'));source('main.script.functions.R')
-  return(job.ids)
+  source(file.path(r.package.path,'R','main.script.functions.R'))
+  setwd(file.path(results.path))
+  
+  cat('\nMerging pancancer results\nRun get_slurm_output\n')
 
-  print(Sys.time() - start.time)
+  return(job.ids)
 }
 
 calculate.null.molecular <- function (
@@ -187,8 +197,10 @@ calculate.null.molecular <- function (
 
   null.molecular.file = file.path(results.path,'null.molecular.RData')
   if( file.exists(null.molecular.file) ) {
-    return()
+    return('NULL Molecular already exists')
   }
+
+  cat('\nCalculating Null Molecular\n')
 
   load(file = file.path(r.package.path,'data','data.mRNA.RData'))
 
@@ -213,11 +225,10 @@ calculate.null.molecular <- function (
   }
   quantiles = apply(stats,2,function(v) quantile(v,c(0.05,0.95),na.rm=T))
   save(quantiles,stats,file = null.molecular.file)
+  cat('\nFinished calculate.null.molecular\n')
 }
 
 calculate.base.cox.model <- function( r.package.path,results.path,queues,num.jobs,memory,walltime ) {
-
-  cat('Calculating base cox model\n')
 
   output.path = file.path(results.path,'output')
   candidates.path = file.path(results.path,'candidates')
@@ -238,17 +249,23 @@ calculate.base.cox.model <- function( r.package.path,results.path,queues,num.job
   source(file.path(r.package.path,'R','calculate.base.cox.model.R'))
   library(rslurm,quietly=T)
   params = data.frame(r.package.path,results.path,workers=num.jobs,id=seq(num.jobs));head(params)
-  sopt <- list(qos = queues, mem = memory, time = walltime, share = TRUE)
+  if (is.na(queues)) {
+    sopt <- list(mem = memory, time = walltime, share = TRUE)
+  } else {
+    sopt <- list(qos = queues, mem = memory, time = walltime, share = TRUE)
+  }
   setwd(results.path);getwd()
   job.ids <- slurm_apply(calculate.base.cox.model, params, nodes = nrow(params), cpus_per_node = 1, submit = TRUE, slurm_options = sopt)
   job.ids$path = getwd()
-  setwd(file.path(r.package.path,'R'));source('main.script.functions.R')
+  source(file.path(r.package.path,'R','main.script.functions.R'))
+  setwd(file.path(results.path))
+
+  cat('\nCalculating base cox model\nRun get_slurm_output\n')
+
   return(job.ids)
 }
 
 calculate.candidates.cox.fdr <- function( r.package.path,results.path,queues,num.jobs,memory,walltime ) {
-
-  cat('Calculating candidates cox fdr\n')
 
   output.path = file.path(results.path,'output')
   candidates.path = file.path(results.path,'candidates')
@@ -268,16 +285,24 @@ calculate.candidates.cox.fdr <- function( r.package.path,results.path,queues,num
   source(file.path(r.package.path,'R','calculate.candidates.cox.fdr.R'))
   library(rslurm,quietly=T)
   params = data.frame(r.package.path,results.path,workers=num.jobs,id=seq(num.jobs));head(params)
-  sopt <- list(qos = queues, mem = memory, time = walltime, share = TRUE)
+  if (is.na(queues)) {
+    sopt <- list(mem = memory, time = walltime, share = TRUE)
+  } else {
+    sopt <- list(qos = queues, mem = memory, time = walltime, share = TRUE)
+  }
   setwd(results.path);getwd()
   job.ids <- slurm_apply(calculate.candidates.cox.fdr, params, nodes = nrow(params), cpus_per_node = 1, submit = TRUE, slurm_options = sopt)
   job.ids$path = getwd()
-  setwd(file.path(r.package.path,'R'));source('main.script.functions.R')
+  source(file.path(r.package.path,'R','main.script.functions.R'))
+  setwd(file.path(results.path))
+
+  cat('\nCalculating candidates cox fdr\nRun get_slurm_output\n')
+
   return(job.ids)
 }
 
 
-get.final.GIs <- function( r.package.path,results.path,LLR.threshold,PPI = F ) {
+get.final.SPAGEs <- function( r.package.path,results.path,FDR.threshold = 0.99,apply.PPI.filter = F ) {
   
   cat('______________________________________________________________\n')
   start.time <- Sys.time()
@@ -289,14 +314,14 @@ get.final.GIs <- function( r.package.path,results.path,LLR.threshold,PPI = F ) {
   for( bin in bins ) {
     tryCatch({
       load(file.path(results.path,'candidates',paste('mRNA.signed.delta.loglik',bin,'pancancer.results.RData',sep='.')))
-      significance.threshold = quantile(abs(shuffled.candidates.signed.delta.loglik[,3]),LLR.threshold,na.rm=T)
+      significance.threshold = quantile(abs(shuffled.candidates.signed.delta.loglik[,3]),FDR.threshold,na.rm=T)
       significant = abs(candidates.signed.delta.loglik[,3])>significance.threshold
       selected.functional.states = rbind(selected.functional.states,cbind(candidates.signed.delta.loglik[significant,1:2],bin,candidates.signed.delta.loglik[significant,3]))
     },error = function(e) e )
   }
   selected.functional.states = selected.functional.states[rowSums(is.na(selected.functional.states))==0,]
 
-  if( PPI ) {
+  if( apply.PPI.filter ) {
     ppi.distance.file = file.path(results.path,paste(paste(min(bins),max(bins),sep='-'),'mRNA.HPRD.distances.RData',sep='.'))
     if( !file.exists(ppi.distance.file) ) {
       cat('Calculating PPI distances\n')
@@ -374,4 +399,31 @@ calculate.ppi.distances <- function(
   }
   distances = unlist(d)
   return(distances)
+}
+
+get_slurm_output <- function (sjob) {
+
+  Sys.sleep(1)
+  queued = length(system(paste('squeue -hn', sjob$jobname),intern = T)) > 0
+  while(length(system(paste('squeue -hn', sjob$jobname),intern = T)) > 0) {
+    Sys.sleep(1)
+  }
+
+  res_files <- paste0("results_", 0:(sjob$nodes - 1), ".RDS")
+  tmpdir <- file.path(sjob$path,paste0("_rslurm_", sjob$jobname))
+  missing_files <- setdiff(res_files, dir(path = tmpdir))
+  
+  if (length(missing_files) > 0) {
+      missing_list <- paste(missing_files, collapse = ", ")
+      warning(cat("The following files are missing:", missing_list,'\nCheck failed jobs error outputs\n'))
+  }
+  
+  res_files <- file.path(tmpdir, setdiff(res_files, missing_files))
+  if (length(res_files) == 0) return(cat('Distributed job failed\n'))
+  
+  slurm_out <- lapply(res_files, readRDS)
+  slurm_out <- do.call(c, slurm_out)
+  slurm_out <- as.data.frame(do.call(rbind, slurm_out))
+
+  cat('Distributed job finished\nRun cleanup_files and the next command\n')
 }
