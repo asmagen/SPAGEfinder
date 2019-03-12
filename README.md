@@ -37,8 +37,11 @@ Final SPAGEs list is generated in a matrix format where each row represents a SP
 ### UNIX commands
 Connect to remote server [Example: `ssh USER_NAME@SERVER_ADDRESS`]  
 ```git clone https://github.com/asmagen/SPAGEfinder.git```  
+
+Request an interactiveexecution session if required by your system [Example: `sinteractive`]
+
 Invoke R version 3.3.1 [Example (may be different across systems): `module purge; module add R/3.3.1; R`]  
-The following commands are set and run in the R environment.
+The following commands are set and run in the R environment.  
 
 ### Install R packages
 Install the required R packages into the default location (no need to specify where to install, enter 'yes' to indicate installation to personal library if asked).  
