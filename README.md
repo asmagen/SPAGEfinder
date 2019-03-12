@@ -106,8 +106,8 @@ The annotation or format of *samples, type, sex and race* is not important as lo
 ### Potential problems
 
 - The following error may rarely come up in the *get_slurm_output* function:  
-	slurm_load_jobs error: Socket timed out on send/recv operation  
+	'slurm_load_jobs error: Socket timed out on send/recv operation'  
 	The error does not reflect the failure of the analysis but only a failure of monitoring the job execution. Simply rerun the *get_slurm_output* function.  
 - The following error may come up due to insufficient resource allocation.  
-	The following files are missing: ... Check failed jobs error outputs  
+	'The following files are missing: ... Check failed jobs error outputs'  
 
