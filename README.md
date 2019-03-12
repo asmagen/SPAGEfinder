@@ -35,22 +35,23 @@ Final SPAGEs list is generated in a matrix format where each row represents a SP
 ## Analysis setup
 
 ### UNIX commands
-Connect to remote server [Example: ssh USER_NAME@SERVER_ADDRESS]  
-git clone https://github.com/asmagen/SPAGEfinder.git  
-Invoke R version 3.3.1 [Example (may be different across systems): module purge; module add R/3.3.1; R]  
+Connect to remote server [Example: `ssh USER_NAME@SERVER_ADDRESS`]  
+```git clone https://github.com/asmagen/SPAGEfinder.git```  
+Invoke R version 3.3.1 [Example (may be different across systems): `module purge; module add R/3.3.1; R`]  
 The following commands are set and run in the R environment.
 
 ### Install R packages
 Install the required R packages into the default location (no need to specify where to install, enter 'yes' to indicate installation to personal library if asked).  
-install.packages(pkgs = c('Rcpp','RcppArmadillo','survival','rslurm','foreach','doMC','data.table','igraph','whisker','foreach'))  
+```install.packages(pkgs = c('Rcpp','RcppArmadillo','survival','rslurm','foreach','doMC','data.table','igraph','whisker','foreach'))```  
 Specify a repository of choice and verify successful installations by loading packages (Example: library('Rcpp')).  
-source("https://bioconductor.org/biocLite.R"); biocLite("survcomp")  
+`source("https://bioconductor.org/biocLite.R"); biocLite("survcomp")`  
 Verify successful installation.
 
 ### Define relevant analysis paths (in R)
+```
 *r.package.path* = 'USER_SET_PACKAGE_PATH' # Define path for the downloaded pipeline scripts and data (Example: '/USER/SPAGEfinder')  
 *results.path* = 'USER_SET_ANALYSIS_DIRECTORY_PATH' # Define path for analysis results set by user (Example: '/USER/analysis/TCGA_analysis')  
-
+```
 ### Assign values to additional analysis and slurm parameters
 
 The suggested values shown below may be adjusted by the user as needed.  
@@ -58,32 +59,35 @@ The suggested values shown below may be adjusted by the user as needed.
 *p.val.quantile.threshold* = 0.8 # Log-Rank threshold (p value quantile)  
 
 The next 7 parameters may need to be adjusted based on the specification of your high-performance computing system. Run the following command to obtain the info about the available queues, memory, walltime and num.jobs (number of concurrent jobs) resources:  
+```
 *sacctmgr show qos format=name,MaxJobs,MaxWall,MaxTRES*  
 
-	    	   Name  MaxJobs    MaxWall       MaxTRES  
-			---------- ------- ----------- -------------  
-				 normal                                    
-				default      16    01:00:00        mem=4G  
-		 throughput     125    18:00:00       mem=36G  
- high_throghput     300    08:00:00        mem=8G  
-					large       5 11-00:00:00      mem=128G  
-				 xlarge       1 21-00:00:00      mem=512G  
-					 long      16  7-00:00:00       mem=12G  
-    workstation       4  7-00:00:00       mem=48G  
+      Name MaxJobs     MaxWall       MaxTRES 
+---------- ------- ----------- ------------- 
+    normal                                   
+   default      16    01:00:00        mem=4G 
+throughput     125    18:00:00       mem=36G 
+high_thro+     300    08:00:00        mem=8G 
+     large       5 11-00:00:00      mem=128G 
+    xlarge       1 21-00:00:00      mem=512G 
+      long      16  7-00:00:00       mem=12G 
+workstati+       4  7-00:00:00       mem=48G 
+```
 
-Based on this information and the scope of the analysis (whole-genome or in this example case, only about 500 genes) you would define the following parameters:
-
+Based on this information and the scope of the analysis (whole-genome or in this example case, only about 500 genes) you would define the following parameters:  
+```
 *queues*   = 'throughput' # SLURM HPC queue  
 *num.jobs* = 50 # Number of concurrent jobs  
 *walltime* = '1:00:00' # Time limit per job  
 *memory*   = '4GB' # Memory allocation per job  
-
-And the following parameters specifically for the merge.pancancer.results function as it requires more memory than the usual:
+```
+And the following parameters specifically for the merge.pancancer.results function as it requires more memory than the usual:  
+```
 *large.queues*   = 'throughput' # SLURM HPC queue   
 *large.walltime* = '1:00:00' # Time limit per job  
 *large.memory*   = '36GB' # Memory allocation per job  
-
-The appropriate parameters for whole genome analysis (analysis of about 20k genes) are:
+```
+The appropriate parameters for whole genome analysis (analysis of about 20k genes) are:  
 *num.jobs* = 120, *walltime* = '8:00:00', *memory* = '8GB', *large.queues* = 'large', *large.walltime* = '5:00:00', *large.memory* = '120GB'  
 
 Note that in some systems there is no need to specify the queues parameter. If the queues specification above results in an error, use *queues = NA* and *large.queues = NA* to let the system choose the appropriate queues by itself.
@@ -106,7 +110,7 @@ The annotation or format of *samples, type, sex and race* is not important as lo
 ### Potential problems
 
 - The following error may rarely come up in the *get_slurm_output* function:  
-	'slurm_load_jobs error: Socket timed out on send/recv operation'  
+	```'slurm_load_jobs error: Socket timed out on send/recv operation'```  
 	The error does not reflect the failure of the analysis but only a failure of monitoring the job execution. Simply rerun the *get_slurm_output* function.  
 - The following error may come up due to insufficient resource allocation.  
 	'The following files are missing: ... Check failed jobs error outputs'  
