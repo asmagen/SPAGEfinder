@@ -54,8 +54,8 @@ Verify successful installation.
 
 ### Define relevant analysis paths (in R)
 ```
-*r.package.path* = 'USER_SET_PACKAGE_PATH' # Define path for the downloaded pipeline scripts and data (Example: '/USER/SPAGEfinder')  
-*results.path* = 'USER_SET_ANALYSIS_DIRECTORY_PATH' # Define path for analysis results set by user (Example: '/USER/analysis/TCGA_analysis')  
+r.package.path = 'USER_SET_PACKAGE_PATH' # Define path for the downloaded pipeline scripts and data (Example: '/USER/SPAGEfinder')  
+results.path = 'USER_SET_ANALYSIS_DIRECTORY_PATH' # Define path for analysis results set by user (Example: '/USER/analysis/TCGA_analysis')  
 ```
 ### Assign values to additional analysis and slurm parameters
 
@@ -81,16 +81,16 @@ workstati+       4  7-00:00:00       mem=48G
 
 Based on this information and the scope of the analysis (whole-genome or in this example case, only about 500 genes) you would define the following parameters:  
 ```
-*queues*   = 'throughput' # SLURM HPC queue  
-*num.jobs* = 50 # Number of concurrent jobs  
-*walltime* = '1:00:00' # Time limit per job  
-*memory*   = '4GB' # Memory allocation per job  
+queues   = 'throughput' # SLURM HPC queue  
+num.jobs = 50 # Number of concurrent jobs  
+walltime = '1:00:00' # Time limit per job  
+memory   = '4GB' # Memory allocation per job  
 ```
 And the following parameters specifically for the merge.pancancer.results function as it requires more memory than the usual:  
 ```
-*large.queues*   = 'throughput' # SLURM HPC queue   
-*large.walltime* = '1:00:00' # Time limit per job  
-*large.memory*   = '36GB' # Memory allocation per job  
+large.queues   = 'throughput' # SLURM HPC queue   
+large.walltime = '1:00:00' # Time limit per job  
+large.memory   = '36GB' # Memory allocation per job  
 ```
 The appropriate parameters for whole genome analysis (analysis of about 20k genes) are:  
 *num.jobs* = 120, *walltime* = '8:00:00', *memory* = '8GB', *large.queues* = 'large', *large.walltime* = '5:00:00', *large.memory* = '120GB'  
