@@ -32,7 +32,7 @@ The C++ code is compiled from within R. Therefore, one need not compile it befor
 The input includes mRNA expression matrix and patient clinical-demographic information which are stored in a single data source object and corresponding file. The TCGA dataset (filtered to Census Cancer Genes) is provided here for quick analysis (Example dataset available: 'data/data.mRNA.RData').
 
 ## Output format
-Final SPAGEs list is generated in a matrix format where each row represents a SPAGE that is annotated by a quadruple (x,y,bin,effect), where x and y are the two interacting genes, bin is a number indicating the bin annotation and effect annotated the significance level where the sign of the effect represents the direction of the interaction; Positive sign represents higher survival risk while negative sign represents lower survival risk.
+Final SPAGEs list is generated in a matrix format where each row represents a SPAGE that is annotated by a quadruple *(x,y,bin,effect)*, where x and y are the two interacting genes, bin is a number indicating the bin annotation and effect annotated the significance level where the sign of the effect represents the direction of the interaction; Positive sign represents higher survival risk while negative sign represents lower survival risk.
 
 ## Analysis setup
 
@@ -65,7 +65,7 @@ The suggested values shown below may be adjusted by the user as needed.
 
 The next 7 parameters may need to be adjusted based on the specification of your high-performance computing system. Run the following command to obtain the info about the available queues, memory, walltime and num.jobs (number of concurrent jobs) resources:  
 ```
-*sacctmgr show qos format=name,MaxJobs,MaxWall,MaxTRES*  
+sacctmgr show qos format=name,MaxJobs,MaxWall,MaxTRES
 
       Name MaxJobs     MaxWall       MaxTRES 
 ---------- ------- ----------- ------------- 
