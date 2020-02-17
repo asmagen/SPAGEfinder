@@ -3,8 +3,8 @@
 # SPAGE-finder Manual (*Magen et al*)
 
 This repository contains code and documentation for a multi-step computational pipeline to search for Survival associated Pairwise Gene Expression states finder (SPAGE-finder).
-Previously, the repository was called EnGIne. The manuscript describing the project can be found at:
-https://www.biorxiv.org/content/10.1101/253120v2
+Previously, the repository was called EnGIne. The [paper](http://dx.doi.org/10.1016/j.celrep.2019.06.067) describing the project can be found at:
+http://dx.doi.org/10.1016/j.celrep.2019.06.067
 
 The repository can be retrieved from GitHub via the command
 *git clone https://github.com/asmagen/SPAGEfinder*
