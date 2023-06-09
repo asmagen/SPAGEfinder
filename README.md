@@ -1,6 +1,6 @@
 [![DOI](https://zenodo.org/badge/163208790.svg)](https://zenodo.org/badge/latestdoi/163208790)
 
-# SPAGE-finder Manual (*Magen et al*)
+# SPAGE-finder Manual (*[Magen](https://assafmagen.com) et al*)
 
 This repository contains code and documentation for a multi-step computational pipeline to search for Survival associated Pairwise Gene Expression states finder (SPAGE-finder).
 Previously, the repository was called EnGIne. The [paper](http://dx.doi.org/10.1016/j.celrep.2019.06.067) describing the project can be found at:
