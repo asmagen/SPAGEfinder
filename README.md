@@ -120,3 +120,5 @@ The annotation or format of *samples, type, sex and race* is not important as lo
 - The following error may come up due to insufficient resource allocation:  
 	'The following files are missing: ... Check failed jobs error outputs'  
 
+[Assaf Magen Ph.D.](https://assafmagen.com)
+See profile at https://assafmagen.com
